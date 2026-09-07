@@ -34,33 +34,6 @@ export const N2_GRAMMAR_POINTS: GrammarPoint[] = [
     drillSentences: [{ before: 'このみせは やすい', after: '、おいしいです。', translation: 'Этот магазин, хоть и дешёвый, но вкусный.' }],
   },
   {
-    id: 'n2gr-toshitemo',
-    jlptLevel: 'n2',
-    title: 'としても — «даже если»',
-    formula: 'Простая форма + としても',
-    explanation: 'Гипотетическое условие с уступкой — "даже если предположить X, всё равно Y".',
-    usage: 'Когда даже при худшем/иному предположении вывод не меняется.',
-    answerToken: 'としても',
-    examples: [
-      ex('明日雨が降るとしても、行きます。', 'Ashita ame ga furu to shite mo, ikimasu.', 'Даже если завтра пойдёт дождь, я пойду.'),
-    ],
-    drillSentences: [{ before: 'あした あめが ふる', after: '、いきます。', translation: 'Даже если завтра пойдёт дождь, я пойду.' }],
-  },
-  {
-    id: 'n2gr-tsutsu',
-    jlptLevel: 'n2',
-    title: 'つつ — «одновременно, хотя»',
-    formula: 'Vます-основа + つつ',
-    explanation: 'Формальный аналог ながら — два действия одновременно, иногда с оттенком противоречия ("зная, что нельзя, всё равно...").',
-    usage: 'В письменной и деловой речи вместо ながら.',
-    answerToken: 'つつ',
-    examples: [
-      ex('働きつつ、勉強しています。', 'Hatarakitsutsu, benkyoushiteimasu.', 'Работая, одновременно учусь.'),
-    ],
-    drillSentences: [{ before: 'はたらき', after: '、べんきょうしています。', translation: 'Работая, одновременно учусь.' }],
-    comparisons: ['つつ — более формальный/письменный вариант ながら (N4).'],
-  },
-  {
     id: 'n2gr-nichigainai',
     jlptLevel: 'n2',
     title: 'に違いない — «должно быть, наверняка»',

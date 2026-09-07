@@ -6,7 +6,7 @@ export const N2_FINAL_EXAM_BLOCK: BlockDefinition = {
   levelId: 'n2',
   title: 'Экзамен N2',
   description: 'Финальная смешанная проверка по всей программе N2 — и всего курса целиком.',
-  order: 5,
+  order: 9,
   contentType: 'mixed',
   prerequisiteBlockId: 'n2-reading',
   lessons: N2_FINAL_EXAM_LESSONS,

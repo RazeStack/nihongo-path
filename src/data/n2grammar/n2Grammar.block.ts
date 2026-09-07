@@ -4,8 +4,8 @@ import type { BlockDefinition } from '@/types/content'
 export const N2_GRAMMAR_BLOCK: BlockDefinition = {
   id: 'n2-grammar',
   levelId: 'n2',
-  title: 'Грамматика N2',
-  description: 'Формальные конструкции продвинутого уровня: にもかかわらず, わりに, としても, つつ, に違いない, かねない, ざるを得ない, ものだ.',
+  title: 'Грамматика N2: предположения и оценка',
+  description: 'にもかかわらず, わりに, に違いない, かねない, ざるを得ない, ものだ.',
   order: 1,
   contentType: 'grammar',
   lessons: N2_GRAMMAR_LESSONS,
@@ -13,10 +13,10 @@ export const N2_GRAMMAR_BLOCK: BlockDefinition = {
     id: 'n2-grammar-exam',
     blockId: 'n2-grammar',
     title: 'Экзамен: Грамматика N2',
-    description: 'Проверка восьми формальных конструкций продвинутого уровня.',
-    questionCount: 8,
-    passingScore: 0.75,
-    xpReward: 300,
+    description: 'Проверка にもかかわらず, わりに, に違いない, かねない, ざるを得ない и ものだ.',
+    questionCount: 12,
+    passingScore: 0.8,
+    xpReward: 260,
   },
 }
 

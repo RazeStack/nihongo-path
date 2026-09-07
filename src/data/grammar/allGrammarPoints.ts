@@ -14,6 +14,10 @@ import { N3_GRAMMAR_EXTENT_POINTS } from '@/data/n3grammar/n3GrammarExtent.point
 import { N3_GRAMMAR_KEIGO_POINTS } from '@/data/n3grammar/n3GrammarKeigo.points'
 import { N3_GRAMMAR_ADVANCED_POINTS } from '@/data/n3grammar/n3GrammarAdvanced.points'
 import { N2_GRAMMAR_POINTS } from '@/data/n2grammar/n2Grammar.points'
+import { N2_GRAMMAR_SCOPE_POINTS } from '@/data/n2grammar/n2GrammarScope.points'
+import { N2_GRAMMAR_CAUSATION_POINTS } from '@/data/n2grammar/n2GrammarCausation.points'
+import { N2_GRAMMAR_PERSPECTIVE_POINTS } from '@/data/n2grammar/n2GrammarPerspective.points'
+import { N2_GRAMMAR_EXPRESSIVE_POINTS } from '@/data/n2grammar/n2GrammarExpressive.points'
 import type { GrammarPoint } from '@/types/content'
 
 export const ALL_GRAMMAR_POINTS: GrammarPoint[] = [
@@ -33,6 +37,10 @@ export const ALL_GRAMMAR_POINTS: GrammarPoint[] = [
   ...N3_GRAMMAR_KEIGO_POINTS,
   ...N3_GRAMMAR_ADVANCED_POINTS,
   ...N2_GRAMMAR_POINTS,
+  ...N2_GRAMMAR_SCOPE_POINTS,
+  ...N2_GRAMMAR_CAUSATION_POINTS,
+  ...N2_GRAMMAR_PERSPECTIVE_POINTS,
+  ...N2_GRAMMAR_EXPRESSIVE_POINTS,
 ]
 
 const BY_ID = new Map(ALL_GRAMMAR_POINTS.map((point) => [point.id, point]))

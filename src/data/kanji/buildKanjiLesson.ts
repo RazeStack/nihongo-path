@@ -91,6 +91,11 @@ function slugify(text: string): string {
     Психология: 'psychology-kanji',
     Экология: 'ecology-kanji',
     'Абстрактные понятия': 'abstract-concepts-kanji',
+    'Экономика и бизнес': 'economy-business-kanji',
+    'Работа и достижения': 'work-achievements-kanji',
+    'Психология и характер': 'psychology-character-kanji',
+    'Тело и здоровье': 'body-health-kanji',
+    'Абстракция и оценка': 'abstraction-evaluation-kanji',
   }
   return map[text] ?? text.toLowerCase()
 }
