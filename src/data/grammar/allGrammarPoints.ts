@@ -8,6 +8,11 @@ import { N4_GRAMMAR_POTENTIAL_POINTS } from '@/data/n4grammar/n4GrammarPotential
 import { N4_GRAMMAR_SPECULATION_POINTS } from '@/data/n4grammar/n4GrammarSpeculation.points'
 import { N4_GRAMMAR_ADDITIONAL_POINTS } from '@/data/n4grammar/n4GrammarAdditional.points'
 import { N3_GRAMMAR_POINTS } from '@/data/n3grammar/n3Grammar.points'
+import { N3_GRAMMAR_FORMAL_POINTS } from '@/data/n3grammar/n3GrammarFormal.points'
+import { N3_GRAMMAR_CONTRAST_POINTS } from '@/data/n3grammar/n3GrammarContrast.points'
+import { N3_GRAMMAR_EXTENT_POINTS } from '@/data/n3grammar/n3GrammarExtent.points'
+import { N3_GRAMMAR_KEIGO_POINTS } from '@/data/n3grammar/n3GrammarKeigo.points'
+import { N3_GRAMMAR_ADVANCED_POINTS } from '@/data/n3grammar/n3GrammarAdvanced.points'
 import { N2_GRAMMAR_POINTS } from '@/data/n2grammar/n2Grammar.points'
 import type { GrammarPoint } from '@/types/content'
 
@@ -22,6 +27,11 @@ export const ALL_GRAMMAR_POINTS: GrammarPoint[] = [
   ...N4_GRAMMAR_SPECULATION_POINTS,
   ...N4_GRAMMAR_ADDITIONAL_POINTS,
   ...N3_GRAMMAR_POINTS,
+  ...N3_GRAMMAR_FORMAL_POINTS,
+  ...N3_GRAMMAR_CONTRAST_POINTS,
+  ...N3_GRAMMAR_EXTENT_POINTS,
+  ...N3_GRAMMAR_KEIGO_POINTS,
+  ...N3_GRAMMAR_ADVANCED_POINTS,
   ...N2_GRAMMAR_POINTS,
 ]
 

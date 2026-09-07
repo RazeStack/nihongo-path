@@ -110,6 +110,10 @@ function slugify(text: string): string {
     'Деловой японский': 'business',
     'Медиа и новости': 'media',
     Наука: 'science',
+    'Психология и эмоции': 'psychology-emotions',
+    'Работа и карьера': 'work-career',
+    'Природа и экология': 'nature-ecology',
+    'Устойчивые выражения': 'set-phrases',
     'Абстрактная мысль': 'abstract-thought',
     'Формальные обороты': 'formal-phrases',
   }

@@ -87,6 +87,10 @@ function slugify(text: string): string {
     Медиа: 'media',
     Наука: 'science',
     Понятия: 'concepts',
+    'Формальная лексика': 'formal-vocab-kanji',
+    Психология: 'psychology-kanji',
+    Экология: 'ecology-kanji',
+    'Абстрактные понятия': 'abstract-concepts-kanji',
   }
   return map[text] ?? text.toLowerCase()
 }

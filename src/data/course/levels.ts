@@ -14,6 +14,11 @@ import { N4_READING_BLOCK } from '@/data/n4reading/n4Reading.block'
 import { N4_VOCABULARY_BLOCK } from '@/data/n4vocabulary/n4Vocabulary.block'
 import { N4_FINAL_EXAM_BLOCK } from '@/data/finalExam/n4FinalExam.block'
 import { N3_GRAMMAR_BLOCK } from '@/data/n3grammar/n3Grammar.block'
+import { N3_GRAMMAR_FORMAL_BLOCK } from '@/data/n3grammar/n3GrammarFormal.block'
+import { N3_GRAMMAR_CONTRAST_BLOCK } from '@/data/n3grammar/n3GrammarContrast.block'
+import { N3_GRAMMAR_EXTENT_BLOCK } from '@/data/n3grammar/n3GrammarExtent.block'
+import { N3_GRAMMAR_KEIGO_BLOCK } from '@/data/n3grammar/n3GrammarKeigo.block'
+import { N3_GRAMMAR_ADVANCED_BLOCK } from '@/data/n3grammar/n3GrammarAdvanced.block'
 import { N3_VOCABULARY_BLOCK } from '@/data/n3vocabulary/n3Vocabulary.block'
 import { N3_KANJI_BLOCK } from '@/data/n3kanji/n3Kanji.block'
 import { N3_READING_BLOCK } from '@/data/n3reading/n3Reading.block'
@@ -80,7 +85,18 @@ export const LEVELS: LevelDefinition[] = [
     description: 'Переход к среднему уровню: устойчивые выражения и сложные конструкции.',
     order: 3,
     prerequisiteLevelId: 'n4',
-    blocks: [N3_GRAMMAR_BLOCK, N3_VOCABULARY_BLOCK, N3_KANJI_BLOCK, N3_READING_BLOCK, N3_FINAL_EXAM_BLOCK],
+    blocks: [
+      N3_GRAMMAR_BLOCK,
+      N3_GRAMMAR_FORMAL_BLOCK,
+      N3_GRAMMAR_CONTRAST_BLOCK,
+      N3_GRAMMAR_EXTENT_BLOCK,
+      N3_GRAMMAR_KEIGO_BLOCK,
+      N3_GRAMMAR_ADVANCED_BLOCK,
+      N3_VOCABULARY_BLOCK,
+      N3_KANJI_BLOCK,
+      N3_READING_BLOCK,
+      N3_FINAL_EXAM_BLOCK,
+    ],
   },
   {
     id: 'n2',
