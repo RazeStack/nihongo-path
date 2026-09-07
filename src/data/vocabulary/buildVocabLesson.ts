@@ -124,6 +124,10 @@ function slugify(text: string): string {
     'Дом и быт': 'home-life',
     'Одежда и вещи': 'clothing-items',
     'Транспорт и город': 'transport-city',
+    Спорт: 'sports',
+    Искусство: 'art',
+    История: 'history',
+    Образование: 'education',
   }
   return map[text] ?? text.toLowerCase()
 }
