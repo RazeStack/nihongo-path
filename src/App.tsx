@@ -1,4 +1,4 @@
-import { BrowserRouter, Route, Routes } from 'react-router-dom'
+import { HashRouter, Route, Routes } from 'react-router-dom'
 import { AppLayout } from '@/components/layout/AppLayout'
 import { AchievementsPage } from '@/pages/AchievementsPage'
 import { BlockPage } from '@/pages/BlockPage'
@@ -13,7 +13,7 @@ import { StatisticsPage } from '@/pages/StatisticsPage'
 
 export default function App() {
   return (
-    <BrowserRouter>
+    <HashRouter>
       <Routes>
         <Route element={<AppLayout />}>
           <Route index element={<DashboardPage />} />
@@ -29,6 +29,6 @@ export default function App() {
           <Route path="*" element={<NotFoundPage />} />
         </Route>
       </Routes>
-    </BrowserRouter>
+    </HashRouter>
   )
 }
