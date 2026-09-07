@@ -7,7 +7,7 @@ export function ReadingPassage({ segments, translation }: { segments: ReadingSeg
   return (
     <div className="flex flex-col gap-3">
       <div className="rounded-2xl border border-border bg-surface p-6">
-        <p className="font-jp text-2xl leading-loose text-text">
+        <p className="font-jp text-2xl leading-loose whitespace-pre-wrap text-text">
           {segments.map((segment, index) => {
             const isGlossed = Boolean(segment.reading || segment.meaning)
             if (!isGlossed) return <span key={index}>{segment.text}</span>

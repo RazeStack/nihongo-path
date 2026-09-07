@@ -1,0 +1,186 @@
+import type { LessonDefinition, ReadingSegment } from '@/types/content'
+
+const BLOCK_ID = 'n4-reading'
+
+function seg(text: string, reading?: string, meaning?: string): ReadingSegment {
+  return { text, reading, meaning }
+}
+
+const introLesson: LessonDefinition = {
+  id: 'n4-reading-intro',
+  blockId: BLOCK_ID,
+  title: 'Тексты N4: длиннее и связнее',
+  description: 'て как союз "и", и как в N4 предложения соединяются друг с другом',
+  order: 0,
+  theory: [
+    { type: 'heading', text: 'て-форма как союз "и"' },
+    {
+      type: 'paragraph',
+      text: 'Кроме конструкций ています, てください и других, у て-формы есть ещё одна базовая роль — она соединяет два действия или два качества в одном предложении, как русское "и". «天気がよくて、楽しかったです» дословно «погода была хорошая, и было весело» — одно предложение вместо двух коротких.',
+    },
+    {
+      type: 'note',
+      text: 'Именно поэтому тексты N4 звучат более "по-взрослому", чем короткие рубленые фразы N5 — несколько мыслей связываются через て в одно предложение.',
+    },
+  ],
+  miniCheck: [],
+  itemIds: [],
+  xpReward: 20,
+}
+
+const messageLesson: LessonDefinition = {
+  id: 'n4-reading-message',
+  blockId: BLOCK_ID,
+  title: 'Сообщение другу',
+  description: 'Приглашение в кино — вопросы, たら и そう',
+  order: 1,
+  theory: [
+    { type: 'heading', text: '鈴木さんへ' },
+    {
+      type: 'reading',
+      translation:
+        'Судзуки-сан, завтра ты занят? Если не занят, не хочешь ли посмотреть фильм вместе? Слышал, погода будет хорошая, так что после этого погуляем в парке. Жду ответа. Танака.',
+      segments: [
+        seg('鈴木さん', 'suzuki-san', 'господин/госпожа Судзуки'),
+        seg('へ', 'e', 'частица адресата (кому)'),
+        seg('\n\n'),
+        seg('明日', 'ashita', 'завтра'),
+        seg('は', 'wa', 'частица темы'),
+        seg('忙しい', 'isogashii', 'занятой'),
+        seg('です', 'desu', 'связка «есть»'),
+        seg('か', 'ka', 'вопросительная частица'),
+        seg('。'),
+        seg('忙しく', 'isogashiku'),
+        seg('なかったら', 'nakattara', 'если не (условная форма от なかった)'),
+        seg('、'),
+        seg('一緒に', 'issho ni', 'вместе'),
+        seg('映画', 'eiga', 'фильм'),
+        seg('を', 'wo', 'частица прямого дополнения'),
+        seg('見ません', 'mimasen', 'не посмотрим'),
+        seg('か', 'ka', 'вопросительная частица (приглашение)'),
+        seg('。'),
+        seg('天気', 'tenki', 'погода'),
+        seg('が', 'ga', 'частица подлежащего'),
+        seg('いい', 'ii', 'хорошая'),
+        seg('そうです', 'sou desu', 'говорят, слышал что'),
+        seg('から', 'kara', 'частица причины ("потому что")'),
+        seg('、'),
+        seg('その後で', 'sono ato de', 'после этого'),
+        seg('公園', 'kouen', 'парк'),
+        seg('を', 'wo'),
+        seg('歩きましょう', 'arukimashou', 'давай погуляем'),
+        seg('。'),
+        seg('返事', 'henji', 'ответ'),
+        seg('を', 'wo'),
+        seg('待っています', 'matteimasu', 'жду (сейчас, длительно)'),
+        seg('。'),
+        seg('\n\n田中', 'tanaka', 'Танака (отправитель)'),
+      ],
+    },
+  ],
+  miniCheck: [
+    {
+      id: 'n4-reading-message-check-0',
+      question: 'Куда приглашает Танака?',
+      options: ['В библиотеку', 'В кино', 'На работу', 'В школу'],
+      correctIndex: 1,
+      explanation: '«映画を見ませんか» — «не посмотрим ли фильм?».',
+    },
+    {
+      id: 'n4-reading-message-check-1',
+      question: 'Какая погода ожидается по тексту?',
+      options: ['Плохая', 'Дождливая', 'Хорошая', 'Снежная'],
+      correctIndex: 2,
+      explanation: '«天気がいいそうです» — «говорят, погода будет хорошая».',
+    },
+  ],
+  itemIds: [],
+  xpReward: 40,
+}
+
+const tripStoryLesson: LessonDefinition = {
+  id: 'n4-reading-trip-story',
+  blockId: BLOCK_ID,
+  title: 'Поездка в Киото',
+  description: 'Простая история о путешествии — て как «и», ながら',
+  order: 2,
+  theory: [
+    { type: 'heading', text: '京都旅行' },
+    {
+      type: 'reading',
+      translation:
+        'На прошлой неделе я съездил в Киото. До Киото добирался на поезде. Погода была хорошая, и было очень весело. Посмотрел известный храм и поел вкусную еду. Гулял по городу, фотографируя. Хочу поехать снова.',
+      segments: [
+        seg('わたしは'),
+        seg('先週', 'senshuu', 'на прошлой неделе'),
+        seg('、'),
+        seg('京都', 'kyouto', 'Киото'),
+        seg('に'),
+        seg('旅行しました', 'ryokou shimashita', 'съездил в путешествие'),
+        seg('。'),
+        seg('京都', 'kyouto', 'Киото'),
+        seg('まで', 'made', 'до (места)'),
+        seg('電車', 'densha', 'поезд'),
+        seg('で'),
+        seg('行きました', 'ikimashita', 'поехал'),
+        seg('。'),
+        seg('天気', 'tenki', 'погода'),
+        seg('が'),
+        seg('よくて', 'yokute', 'хорошая, и (て-форма от いい)'),
+        seg('、'),
+        seg('とても', 'totemo', 'очень'),
+        seg('楽しかったです', 'tanoshikatta desu', 'было весело'),
+        seg('。'),
+        seg('有名な', 'yuumei na', 'известный'),
+        seg('お寺', 'otera', 'храм'),
+        seg('を'),
+        seg('見て', 'mite', 'посмотрел, и (て-форма от 見る)'),
+        seg('、'),
+        seg('おいしい', 'oishii', 'вкусный'),
+        seg('物', 'mono', 'вещь, еда'),
+        seg('を'),
+        seg('食べました', 'tabemashita', 'поел'),
+        seg('。'),
+        seg('写真', 'shashin', 'фотография'),
+        seg('を'),
+        seg('撮り', 'tori', 'фотографируя (основа для ながら)'),
+        seg('ながら', 'nagara', 'делая одновременно с...'),
+        seg('、'),
+        seg('町', 'machi', 'город'),
+        seg('を'),
+        seg('歩きました', 'arukimashita', 'гулял'),
+        seg('。'),
+        seg('また', 'mata', 'снова'),
+        seg('行きたいです', 'ikitai desu', 'хочу поехать'),
+        seg('。'),
+      ],
+    },
+  ],
+  miniCheck: [
+    {
+      id: 'n4-reading-trip-story-check-0',
+      question: 'Куда ездил рассказчик?',
+      options: ['В Токио', 'В Осаку', 'В Киото', 'В Хиросиму'],
+      correctIndex: 2,
+      explanation: '«京都に旅行しました» — «съездил в путешествие в Киото».',
+    },
+    {
+      id: 'n4-reading-trip-story-check-1',
+      question: 'На чём добирался до Киото?',
+      options: ['На автобусе', 'На поезде', 'На самолёте', 'На машине'],
+      correctIndex: 1,
+      explanation: '«電車で行きました» — «поехал на поезде».',
+    },
+    {
+      id: 'n4-reading-trip-story-check-2',
+      question: 'Что делал рассказчик, гуляя по городу?',
+      options: ['Читал книгу', 'Фотографировал', 'Разговаривал по телефону', 'Спал'],
+      correctIndex: 1,
+      explanation: '«写真を撮りながら、町を歩きました» — «гулял по городу, фотографируя».',
+    },
+  ],
+  itemIds: [],
+  xpReward: 40,
+}
+
+export const N4_READING_LESSONS: LessonDefinition[] = [introLesson, messageLesson, tripStoryLesson]

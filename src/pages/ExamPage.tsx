@@ -87,8 +87,7 @@ export function ExamPage() {
     return <RunningReadingExam {...examMeta} items={getKnownReadingQuestions([block], progress)} />
   }
   if (block.contentType === 'mixed') {
-    const n5AllBlocks = findLevel('n5')?.blocks ?? []
-    return <RunningMixedExam {...examMeta} items={getFinalExamQuestionPool(n5AllBlocks, progress)} />
+    return <RunningMixedExam {...examMeta} items={getFinalExamQuestionPool(level.blocks, progress)} />
   }
   return <RunningDirectionalExam {...examMeta} items={getKnownKanaCharacters([block], progress)} adapter={KANA_ADAPTER} />
 }

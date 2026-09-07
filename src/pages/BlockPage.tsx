@@ -76,7 +76,7 @@ export function BlockPage() {
       </section>
 
       <section className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-        {block.contentType !== 'reading' && (
+        {block.contentType !== 'reading' && block.contentType !== 'mixed' && (
           <Card>
             <h2 className="text-lg font-semibold text-text">Практика</h2>
             <p className="mt-1 text-sm text-text-muted">Потренируй материал этого блока в разных режимах.</p>
