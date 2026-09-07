@@ -96,6 +96,17 @@ function slugify(text: string): string {
     'Психология и характер': 'psychology-character-kanji',
     'Тело и здоровье': 'body-health-kanji',
     'Абстракция и оценка': 'abstraction-evaluation-kanji',
+    'Подготовка и планы': 'preparation-plans-kanji',
+    'Общение и отношения': 'communication-relationships-kanji',
+    Путешествия: 'travel-kanji',
+    'Здоровье и тело': 'health-body-kanji',
+    'Еда и вкусы': 'food-tastes-kanji',
+    'Работа и офис': 'work-office-kanji',
+    'Учёба и природа': 'study-nature-kanji',
+    'Реакции и техника': 'reactions-tech-kanji',
+    'Качества и оценка': 'qualities-evaluation-kanji',
+    'Дом и покупки': 'home-shopping-kanji',
+    'Действия и чувства': 'actions-feelings-kanji',
   }
   return map[text] ?? text.toLowerCase()
 }

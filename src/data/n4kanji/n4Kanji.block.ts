@@ -5,7 +5,7 @@ export const N4_KANJI_BLOCK: BlockDefinition = {
   id: 'n4-kanji',
   levelId: 'n4',
   title: 'Кандзи N4',
-  description: '72 иероглифа N4: работа, правила, общество, технологии, характер, здоровье, мышление, природные явления и достижение целей — почти все уже знакомы как слова.',
+  description: '176 иероглифов N4 по 21 теме: работа, правила, общество, технологии, характер, здоровье, мышление, природные явления, путешествия, дом, покупки, эмоции и достижение целей — почти все уже знакомы как слова.',
   order: 6,
   contentType: 'kanji',
   prerequisiteBlockId: 'n4-vocabulary',
@@ -14,10 +14,10 @@ export const N4_KANJI_BLOCK: BlockDefinition = {
     id: 'n4-kanji-exam',
     blockId: 'n4-kanji',
     title: 'Экзамен: Кандзи N4',
-    description: 'Проверка значений всех 72 кандзи N4 в обе стороны.',
+    description: 'Проверка значений всех 176 кандзи N4 в обе стороны.',
     questionCount: 30,
     passingScore: 0.8,
-    xpReward: 280,
+    xpReward: 320,
   },
 }
 

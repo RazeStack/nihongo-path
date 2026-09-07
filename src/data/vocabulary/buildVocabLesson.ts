@@ -121,6 +121,9 @@ function slugify(text: string): string {
     'Устойчивые выражения': 'set-phrases',
     'Абстрактная мысль': 'abstract-thought',
     'Формальные обороты': 'formal-phrases',
+    'Дом и быт': 'home-life',
+    'Одежда и вещи': 'clothing-items',
+    'Транспорт и город': 'transport-city',
   }
   return map[text] ?? text.toLowerCase()
 }
