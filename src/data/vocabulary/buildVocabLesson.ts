@@ -64,6 +64,11 @@ function slugify(text: string): string {
     'Природа и погода': 'nature-weather',
     Эмоции: 'emotions',
     'Абстрактные понятия': 'abstract',
+    Общество: 'society',
+    Технологии: 'technology',
+    Экономика: 'economy',
+    Отношения: 'relationships',
+    'Формальная лексика': 'formal',
   }
   return map[text] ?? text.toLowerCase()
 }

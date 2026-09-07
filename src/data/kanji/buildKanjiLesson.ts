@@ -59,6 +59,10 @@ function slugify(text: string): string {
     Учёба: 'study',
     Природа: 'nature',
     'Понятия и чувства': 'concepts-feelings',
+    Общество: 'society',
+    Технологии: 'technology',
+    Экономика: 'economy',
+    Отношения: 'relationships',
   }
   return map[text] ?? text.toLowerCase()
 }
