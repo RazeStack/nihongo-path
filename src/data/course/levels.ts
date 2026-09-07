@@ -4,6 +4,8 @@ import { KATAKANA_BLOCK } from '@/data/katakana/katakana.block'
 import { N5_ADJECTIVES_BLOCK } from '@/data/adjectives/n5Adjectives.block'
 import { N5_FINAL_EXAM_BLOCK } from '@/data/finalExam/n5FinalExam.block'
 import { N4_GRAMMAR_BLOCK } from '@/data/n4grammar/n4Grammar.block'
+import { N4_KANJI_BLOCK } from '@/data/n4kanji/n4Kanji.block'
+import { N4_VOCABULARY_BLOCK } from '@/data/n4vocabulary/n4Vocabulary.block'
 import { N5_KANJI_BLOCK } from '@/data/kanji/n5Kanji.block'
 import { N5_NUMBERS_TIME_BLOCK } from '@/data/numbers/n5NumbersTime.block'
 import { N5_READING_BLOCK } from '@/data/reading/n5Reading.block'
@@ -42,10 +44,8 @@ export const LEVELS: LevelDefinition[] = [
     description: 'Более сложная грамматика, больше кандзи и связные тексты.',
     order: 2,
     prerequisiteLevelId: 'n5',
-    blocks: [N4_GRAMMAR_BLOCK],
+    blocks: [N4_GRAMMAR_BLOCK, N4_VOCABULARY_BLOCK, N4_KANJI_BLOCK],
     plannedBlocks: [
-      { title: 'Словарь N4', description: 'Расширение словарного запаса' },
-      { title: 'Кандзи N4', description: 'Больше иероглифов' },
       { title: 'Чтение N4', description: 'Более длинные тексты и сообщения' },
       { title: 'Экзамен N4', description: 'Итоговая проверка перед переходом на N3' },
     ],

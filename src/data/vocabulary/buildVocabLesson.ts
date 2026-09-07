@@ -59,6 +59,11 @@ function slugify(text: string): string {
     'Сотни и валюта': 'hundreds-currency',
     Час: 'hours',
     Минуты: 'minutes',
+    Работа: 'work',
+    Учёба: 'study',
+    'Природа и погода': 'nature-weather',
+    Эмоции: 'emotions',
+    'Абстрактные понятия': 'abstract',
   }
   return map[text] ?? text.toLowerCase()
 }

@@ -21,25 +21,25 @@ export function buildKanjiLesson(group: string, kanjiList: KanjiEntry[], allKanj
   }
 
   return {
-    id: `n5-kanji-${slugify(group)}`,
+    id: `${blockId}-${slugify(group)}`,
     blockId,
     title: group,
     description: kanjiList.map((k) => k.char).join('  '),
     order,
     theory,
-    miniCheck: buildMiniCheck(kanjiList, allKanji, group),
+    miniCheck: buildMiniCheck(kanjiList, allKanji, group, blockId),
     itemIds: kanjiList.map((k) => k.id),
     xpReward: 50,
   }
 }
 
-function buildMiniCheck(kanjiList: KanjiEntry[], allKanji: KanjiEntry[], group: string): MiniCheckQuestion[] {
+function buildMiniCheck(kanjiList: KanjiEntry[], allKanji: KanjiEntry[], group: string, blockId: string): MiniCheckQuestion[] {
   const distractorPool = allKanji.filter((k) => !kanjiList.some((target) => target.id === k.id)).map((k) => k.meaning)
 
   return pickRandom(kanjiList, Math.min(3, kanjiList.length)).map((target, index): MiniCheckQuestion => {
     const options = shuffle([target.meaning, ...pickRandom(distractorPool, Math.min(3, distractorPool.length))])
     return {
-      id: `n5-kanji-${slugify(group)}-check-${index}`,
+      id: `${blockId}-${slugify(group)}-check-${index}`,
       question: `Что значит кандзи «${target.char}»?`,
       options,
       correctIndex: options.indexOf(target.meaning),
@@ -55,6 +55,10 @@ function slugify(text: string): string {
     'Природа и вещи': 'nature-things',
     'Школа и жизнь': 'school-life',
     Действия: 'actions',
+    Работа: 'work',
+    Учёба: 'study',
+    Природа: 'nature',
+    'Понятия и чувства': 'concepts-feelings',
   }
   return map[text] ?? text.toLowerCase()
 }
