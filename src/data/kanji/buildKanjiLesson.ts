@@ -63,6 +63,10 @@ function slugify(text: string): string {
     Технологии: 'technology',
     Экономика: 'economy',
     Отношения: 'relationships',
+    Дело: 'business',
+    Медиа: 'media',
+    Наука: 'science',
+    Понятия: 'concepts',
   }
   return map[text] ?? text.toLowerCase()
 }

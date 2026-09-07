@@ -69,6 +69,11 @@ function slugify(text: string): string {
     Экономика: 'economy',
     Отношения: 'relationships',
     'Формальная лексика': 'formal',
+    'Деловой японский': 'business',
+    'Медиа и новости': 'media',
+    Наука: 'science',
+    'Абстрактная мысль': 'abstract-thought',
+    'Формальные обороты': 'formal-phrases',
   }
   return map[text] ?? text.toLowerCase()
 }

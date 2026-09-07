@@ -13,6 +13,11 @@ import { N3_VOCABULARY_BLOCK } from '@/data/n3vocabulary/n3Vocabulary.block'
 import { N3_KANJI_BLOCK } from '@/data/n3kanji/n3Kanji.block'
 import { N3_READING_BLOCK } from '@/data/n3reading/n3Reading.block'
 import { N3_FINAL_EXAM_BLOCK } from '@/data/finalExam/n3FinalExam.block'
+import { N2_GRAMMAR_BLOCK } from '@/data/n2grammar/n2Grammar.block'
+import { N2_VOCABULARY_BLOCK } from '@/data/n2vocabulary/n2Vocabulary.block'
+import { N2_KANJI_BLOCK } from '@/data/n2kanji/n2Kanji.block'
+import { N2_READING_BLOCK } from '@/data/n2reading/n2Reading.block'
+import { N2_FINAL_EXAM_BLOCK } from '@/data/finalExam/n2FinalExam.block'
 import { N5_KANJI_BLOCK } from '@/data/kanji/n5Kanji.block'
 import { N5_NUMBERS_TIME_BLOCK } from '@/data/numbers/n5NumbersTime.block'
 import { N5_READING_BLOCK } from '@/data/reading/n5Reading.block'
@@ -67,8 +72,7 @@ export const LEVELS: LevelDefinition[] = [
     description: 'Продвинутый уровень: формальный язык, длинные тексты, подготовка к экзамену.',
     order: 4,
     prerequisiteLevelId: 'n3',
-    blocks: [],
-    plannedBlocks: [{ title: 'Контент N2', description: 'Появится по мере прохождения N3' }],
+    blocks: [N2_GRAMMAR_BLOCK, N2_VOCABULARY_BLOCK, N2_KANJI_BLOCK, N2_READING_BLOCK, N2_FINAL_EXAM_BLOCK],
   },
 ]
 
