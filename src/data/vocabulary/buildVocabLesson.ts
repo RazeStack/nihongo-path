@@ -20,25 +20,25 @@ export function buildVocabCategoryLesson(category: string, words: VocabWord[], a
   ]
 
   return {
-    id: `n5-vocabulary-${slugify(category)}`,
+    id: `${blockId}-${slugify(category)}`,
     blockId,
     title: category,
     description: words.map((w) => w.japanese).join(' · '),
     order,
     theory,
-    miniCheck: buildMiniCheck(words, allWords, category),
+    miniCheck: buildMiniCheck(words, allWords, category, blockId),
     itemIds: words.map((w) => w.id),
     xpReward: 50,
   }
 }
 
-function buildMiniCheck(words: VocabWord[], allWords: VocabWord[], category: string): MiniCheckQuestion[] {
+function buildMiniCheck(words: VocabWord[], allWords: VocabWord[], category: string, blockId: string): MiniCheckQuestion[] {
   const distractorPool = allWords.filter((w) => !words.some((target) => target.id === w.id)).map((w) => w.translation)
 
   return pickRandom(words, Math.min(3, words.length)).map((target, index): MiniCheckQuestion => {
     const options = shuffle([target.translation, ...pickRandom(distractorPool, Math.min(3, distractorPool.length))])
     return {
-      id: `n5-vocabulary-${slugify(category)}-check-${index}`,
+      id: `${blockId}-${slugify(category)}-check-${index}`,
       question: `Что значит «${target.japanese}» (${target.kana})?`,
       options,
       correctIndex: options.indexOf(target.translation),
@@ -55,6 +55,10 @@ function slugify(text: string): string {
     Транспорт: 'transport',
     Время: 'time',
     Места: 'places',
+    'Числа 1-10': 'numbers',
+    'Сотни и валюта': 'hundreds-currency',
+    Час: 'hours',
+    Минуты: 'minutes',
   }
   return map[text] ?? text.toLowerCase()
 }

@@ -1,4 +1,5 @@
 import { AlertTriangle, Info } from 'lucide-react'
+import { ReadingPassage } from './ReadingPassage'
 import type { TheorySection } from '@/types/content'
 
 export function TheoryRenderer({ sections }: { sections: TheorySection[] }) {
@@ -73,6 +74,9 @@ function TheorySectionBlock({ section }: { section: TheorySection }) {
           <span>{section.text}</span>
         </div>
       )
+
+    case 'reading':
+      return <ReadingPassage segments={section.segments} translation={section.translation} />
 
     case 'warning':
       return (

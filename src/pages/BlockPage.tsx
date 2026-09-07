@@ -76,15 +76,17 @@ export function BlockPage() {
       </section>
 
       <section className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-        <Card>
-          <h2 className="text-lg font-semibold text-text">Практика</h2>
-          <p className="mt-1 text-sm text-text-muted">Потренируй символы этого блока в разных режимах.</p>
-          <Link to={`/course/${levelId}/${blockId}/practice`} className="mt-4 block">
-            <Button variant="secondary" className="w-full">
-              Открыть практику
-            </Button>
-          </Link>
-        </Card>
+        {block.contentType !== 'reading' && (
+          <Card>
+            <h2 className="text-lg font-semibold text-text">Практика</h2>
+            <p className="mt-1 text-sm text-text-muted">Потренируй материал этого блока в разных режимах.</p>
+            <Link to={`/course/${levelId}/${blockId}/practice`} className="mt-4 block">
+              <Button variant="secondary" className="w-full">
+                Открыть практику
+              </Button>
+            </Link>
+          </Card>
+        )}
 
         <Card>
           <h2 className="text-lg font-semibold text-text">{block.exam.title}</h2>

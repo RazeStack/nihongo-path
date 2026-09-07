@@ -9,9 +9,17 @@ import { findBlock, findLevel, LEVELS } from '@/data/course/levels'
 import { usePracticeSession } from '@/hooks/usePracticeSession'
 import { generateGrammarQuestion, type GrammarDrillItem } from '@/services/questionGenerators/grammarQuestions'
 import { KANA_ADAPTER, KANJI_ADAPTER, VOCAB_ADAPTER, type DirectionalAdapter } from '@/services/questionGenerators/directionalAdapters'
+import { getFinalExamQuestionPool, labelForSrsKey } from '@/services/finalExamQuestions'
 import { pickRandom } from '@/utils/shuffle'
 import { getBestExamScore, isBlockLessonsComplete, isBlockUnlocked, isLevelUnlocked } from '@/services/progressService'
-import { getKnownGrammarDrillItems, getKnownKanaCharacters, getKnownKanjiEntries, getKnownVocabWords } from '@/services/knownItems'
+import {
+  getKnownGrammarDrillItems,
+  getKnownKanaCharacters,
+  getKnownKanjiEntries,
+  getKnownReadingQuestions,
+  getKnownVocabWords,
+  type ReadingQuestionItem,
+} from '@/services/knownItems'
 import { announceRewards } from '@/services/rewardAnnouncer'
 import { useProgressStore } from '@/store/useProgressStore'
 import type { PracticeSourceItem } from '@/services/practiceEngine'
@@ -74,6 +82,13 @@ export function ExamPage() {
   }
   if (block.contentType === 'kanji') {
     return <RunningDirectionalExam {...examMeta} items={getKnownKanjiEntries([block], progress)} adapter={KANJI_ADAPTER} />
+  }
+  if (block.contentType === 'reading') {
+    return <RunningReadingExam {...examMeta} items={getKnownReadingQuestions([block], progress)} />
+  }
+  if (block.contentType === 'mixed') {
+    const n5AllBlocks = findLevel('n5')?.blocks ?? []
+    return <RunningMixedExam {...examMeta} items={getFinalExamQuestionPool(n5AllBlocks, progress)} />
   }
   return <RunningDirectionalExam {...examMeta} items={getKnownKanaCharacters([block], progress)} adapter={KANA_ADAPTER} />
 }
@@ -203,6 +218,33 @@ function RunningGrammarExam({ items, ...meta }: ExamMeta & { items: GrammarDrill
       session.result
         ? computeWeakGroups(session.answered, (srsKey) => findGrammarPointById(srsKey.split(':')[1])?.title)
         : [],
+    [session.result, session.answered],
+  )
+
+  return useExamCompletion(meta, session, weakTopics)
+}
+
+function RunningReadingExam({ items, ...meta }: ExamMeta & { items: ReadingQuestionItem[] }) {
+  const session = usePracticeSession({
+    items,
+    mode: 'exam',
+    count: Math.min(meta.questionCount, items.length),
+    generateQuestion: (item) => item.question,
+  })
+
+  return useExamCompletion(meta, session, [])
+}
+
+function RunningMixedExam({ items, ...meta }: ExamMeta & { items: ReadingQuestionItem[] }) {
+  const session = usePracticeSession({
+    items,
+    mode: 'exam',
+    count: Math.min(meta.questionCount, items.length),
+    generateQuestion: (item) => item.question,
+  })
+
+  const weakTopics = useMemo(
+    () => (session.result ? computeWeakGroups(session.answered, labelForSrsKey) : []),
     [session.result, session.answered],
   )
 

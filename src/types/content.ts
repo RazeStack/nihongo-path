@@ -92,6 +92,13 @@ export interface GrammarPoint {
   comparisons?: string[]
 }
 
+/** Кусочек текста для интерактивного чтения. Без reading/meaning — обычный текст (пунктуация, часть слова). */
+export interface ReadingSegment {
+  text: string
+  reading?: string
+  meaning?: string
+}
+
 /** Структурные блоки теории урока — рендерятся общим TheoryRenderer. */
 export type TheorySection =
   | { type: 'heading'; text: string }
@@ -101,6 +108,7 @@ export type TheorySection =
   | { type: 'note'; text: string }
   | { type: 'warning'; text: string }
   | { type: 'list'; items: string[] }
+  | { type: 'reading'; segments: ReadingSegment[]; translation: string }
 
 export interface MiniCheckQuestion {
   id: string

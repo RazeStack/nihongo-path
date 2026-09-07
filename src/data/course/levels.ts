@@ -2,7 +2,10 @@ import { N5_GRAMMAR_BASICS_BLOCK } from '@/data/grammar/n5GrammarBasics.block'
 import { HIRAGANA_BLOCK } from '@/data/hiragana/hiragana.block'
 import { KATAKANA_BLOCK } from '@/data/katakana/katakana.block'
 import { N5_ADJECTIVES_BLOCK } from '@/data/adjectives/n5Adjectives.block'
+import { N5_FINAL_EXAM_BLOCK } from '@/data/finalExam/n5FinalExam.block'
 import { N5_KANJI_BLOCK } from '@/data/kanji/n5Kanji.block'
+import { N5_NUMBERS_TIME_BLOCK } from '@/data/numbers/n5NumbersTime.block'
+import { N5_READING_BLOCK } from '@/data/reading/n5Reading.block'
 import { N5_VERBS_BLOCK } from '@/data/verbs/n5Verbs.block'
 import { N5_VOCABULARY_BLOCK } from '@/data/vocabulary/n5Vocabulary.block'
 import type { LevelDefinition } from '@/types/content'
@@ -27,11 +30,9 @@ export const LEVELS: LevelDefinition[] = [
       N5_KANJI_BLOCK,
       N5_VERBS_BLOCK,
       N5_ADJECTIVES_BLOCK,
-    ],
-    plannedBlocks: [
-      { title: 'Числа и время', description: 'Счёт предметов, часы, дни недели' },
-      { title: 'Чтение', description: 'Простые тексты и диалоги' },
-      { title: 'Экзамен N5', description: 'Итоговая проверка перед переходом на N4' },
+      N5_NUMBERS_TIME_BLOCK,
+      N5_READING_BLOCK,
+      N5_FINAL_EXAM_BLOCK,
     ],
   },
   {

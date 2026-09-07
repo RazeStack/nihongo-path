@@ -8,6 +8,8 @@ import { vocabSrsKey } from '@/services/questionGenerators/vocabQuestions'
 import { kanjiSrsKey } from '@/services/questionGenerators/kanjiQuestions'
 import type { BlockDefinition, KanaChar, KanjiEntry, VocabWord } from '@/types/content'
 import type { UserProgress } from '@/types/progress'
+import type { PracticeSourceItem } from '@/services/practiceEngine'
+import type { Question } from '@/types/practice'
 
 /** KanaChar с добавленным srsKey — так его можно напрямую скормить универсальному usePracticeSession. */
 export type PracticeKanaChar = KanaChar & { srsKey: string }
@@ -62,4 +64,40 @@ export function getKnownKanjiEntries(blocks: BlockDefinition[], progress: UserPr
     .map(findKanjiEntryById)
     .filter((entry): entry is KanjiEntry => entry !== undefined)
     .map((entry) => ({ ...entry, srsKey: kanjiSrsKey(entry) }))
+}
+
+/** Уже готовый вопрос на понимание текста — обёрнут как PracticeSourceItem, чтобы usePracticeSession мог его использовать напрямую. */
+export interface ReadingQuestionItem extends PracticeSourceItem {
+  question: Question
+}
+
+/**
+ * Вопросы на понимание чтения устроены не так, как остальной контент: их
+ * не генерируют из общего пула (кандидат/дистракторы), они уже написаны
+ * вручную под конкретный текст в lesson.miniCheck. Поэтому здесь мы просто
+ * собираем миниCheck-вопросы уже пройденных уроков блока Reading как есть.
+ */
+export function getKnownReadingQuestions(blocks: BlockDefinition[], progress: UserProgress): ReadingQuestionItem[] {
+  const items: ReadingQuestionItem[] = []
+  for (const block of blocks) {
+    for (const lesson of block.lessons) {
+      if (!progress.completedLessons.includes(lesson.id)) continue
+      lesson.miniCheck.forEach((check, index) => {
+        const srsKey = `reading:${lesson.id}-${index}`
+        items.push({
+          id: srsKey,
+          srsKey,
+          question: {
+            id: srsKey,
+            srsKey,
+            prompt: check.question,
+            correctAnswer: check.options[check.correctIndex],
+            options: check.options,
+            explanation: check.explanation,
+          },
+        })
+      })
+    }
+  }
+  return items
 }

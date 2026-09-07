@@ -2,6 +2,7 @@ import { ALL_KANA_CHARACTERS } from '@/data/kana/allKanaCharacters'
 import { ALL_GRAMMAR_POINTS } from '@/data/grammar/allGrammarPoints'
 import { ALL_VOCAB_WORDS } from '@/data/vocabulary/allVocabWords'
 import { ALL_KANJI_ENTRIES } from '@/data/kanji/allKanjiEntries'
+import { N5_READING_LESSONS } from '@/data/reading/n5Reading.lessons'
 import { kanaSrsKey } from '@/services/questionGenerators/kanaQuestions'
 import { grammarSrsKey } from '@/services/questionGenerators/grammarQuestions'
 import { vocabSrsKey } from '@/services/questionGenerators/vocabQuestions'
@@ -48,6 +49,9 @@ export function computeWeakTopics(progress: UserProgress): WeakTopic[] {
   }
   for (const entry of ALL_KANJI_ENTRIES) {
     addStat(stats, 'Кандзи', progress, kanjiSrsKey(entry))
+  }
+  for (const lesson of N5_READING_LESSONS) {
+    lesson.miniCheck.forEach((_, index) => addStat(stats, 'Чтение', progress, `reading:${lesson.id}-${index}`))
   }
 
   return [...stats.entries()]
