@@ -1,0 +1,123 @@
+import { LEVELS } from '@/data/course/levels'
+import { hasPassedExam, isLevelCompleted } from '@/services/progressService'
+import type { AchievementDefinition } from '@/types/gamification'
+
+const findLevel = (id: string) => LEVELS.find((level) => level.id === id)!
+
+export const ACHIEVEMENTS: AchievementDefinition[] = [
+  {
+    id: 'first-lesson',
+    title: 'Первый шаг',
+    description: 'Заверши свой первый урок.',
+    icon: '🎯',
+    xpReward: 10,
+    isUnlocked: (progress) => progress.completedLessons.length >= 1,
+  },
+  {
+    id: 'xp-100',
+    title: 'Первые 100 XP',
+    description: 'Набери 100 очков опыта.',
+    icon: '⭐',
+    xpReward: 10,
+    isUnlocked: (progress) => progress.xp >= 100,
+  },
+  {
+    id: 'first-exam',
+    title: 'Экзаменатор',
+    description: 'Сдай свой первый экзамен.',
+    icon: '📝',
+    xpReward: 25,
+    isUnlocked: (progress) => Object.values(progress.blockExamAttempts).some((list) => list.some((a) => a.passed)),
+  },
+  {
+    id: 'all-hiragana',
+    title: 'Мастер хираганы',
+    description: 'Сдай экзамен по хирагане.',
+    icon: '🀄',
+    xpReward: 30,
+    isUnlocked: (progress) => hasPassedExam(progress, 'n5-hiragana-exam'),
+  },
+  {
+    id: 'all-katakana',
+    title: 'Мастер катаканы',
+    description: 'Сдай экзамен по катакане.',
+    icon: '🈵',
+    xpReward: 30,
+    isUnlocked: (progress) => hasPassedExam(progress, 'n5-katakana-exam'),
+  },
+  {
+    id: 'correct-100',
+    title: 'Сотня правильных',
+    description: 'Дай 100 правильных ответов в тренировках.',
+    icon: '✅',
+    xpReward: 30,
+    isUnlocked: (progress) => progress.totalCorrect >= 100,
+  },
+  {
+    id: 'streak-7',
+    title: 'Неделя без пропусков',
+    description: 'Занимайся 7 дней подряд.',
+    icon: '🔥',
+    xpReward: 50,
+    isUnlocked: (progress) => progress.streak.longest >= 7,
+  },
+  {
+    id: 'xp-1000',
+    title: 'Тысяча очков',
+    description: 'Набери 1000 очков опыта.',
+    icon: '💎',
+    xpReward: 50,
+    isUnlocked: (progress) => progress.xp >= 1000,
+  },
+  {
+    id: 'n5-complete',
+    title: 'Первый N5',
+    description: 'Пройди все блоки уровня N5.',
+    icon: '🏁',
+    xpReward: 100,
+    isUnlocked: (progress) => isLevelCompleted(findLevel('n5'), progress),
+  },
+  {
+    id: 'n4-complete',
+    title: 'Первый N4',
+    description: 'Пройди все блоки уровня N4.',
+    icon: '🏁',
+    xpReward: 150,
+    isUnlocked: (progress) => isLevelCompleted(findLevel('n4'), progress),
+  },
+  {
+    id: 'n3-complete',
+    title: 'Первый N3',
+    description: 'Пройди все блоки уровня N3.',
+    icon: '🏁',
+    xpReward: 200,
+    isUnlocked: (progress) => isLevelCompleted(findLevel('n3'), progress),
+  },
+  {
+    id: 'n2-complete',
+    title: 'Первый N2',
+    description: 'Пройди все блоки уровня N2.',
+    icon: '🏆',
+    xpReward: 300,
+    isUnlocked: (progress) => isLevelCompleted(findLevel('n2'), progress),
+  },
+  {
+    id: 'hidden-perfect-exam',
+    title: 'Без единой ошибки',
+    description: 'Сдай любой экзамен на 100%.',
+    icon: '💯',
+    xpReward: 40,
+    hidden: true,
+    isUnlocked: (progress) =>
+      Object.values(progress.blockExamAttempts).some((list) => list.some((a) => a.scorePercent === 100)),
+  },
+  {
+    id: 'hidden-persistent',
+    title: 'Не сдаётся',
+    description: 'Пять раз ошибись в одном и том же элементе — и всё равно выучи его.',
+    icon: '🌱',
+    xpReward: 20,
+    hidden: true,
+    isUnlocked: (progress) => Object.values(progress.srs).some((item) => item.lapses >= 5),
+  },
+]
