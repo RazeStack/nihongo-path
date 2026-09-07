@@ -44,6 +44,24 @@ export interface DrillSentence {
   romaji?: string
 }
 
+export interface RelatedWord {
+  japanese: string
+  kana: string
+  romaji: string
+  translation: string
+}
+
+export interface KanjiEntry {
+  id: string
+  char: string
+  jlptLevel: JlptLevelId
+  meaning: string
+  onyomi: string[]
+  kunyomi: string[]
+  relatedWords: RelatedWord[]
+  example: ExampleWord
+}
+
 export interface VocabWord {
   id: string
   jlptLevel: JlptLevelId

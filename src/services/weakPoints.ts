@@ -1,9 +1,11 @@
 import { ALL_KANA_CHARACTERS } from '@/data/kana/allKanaCharacters'
 import { ALL_GRAMMAR_POINTS } from '@/data/grammar/allGrammarPoints'
 import { ALL_VOCAB_WORDS } from '@/data/vocabulary/allVocabWords'
+import { ALL_KANJI_ENTRIES } from '@/data/kanji/allKanjiEntries'
 import { kanaSrsKey } from '@/services/questionGenerators/kanaQuestions'
 import { grammarSrsKey } from '@/services/questionGenerators/grammarQuestions'
 import { vocabSrsKey } from '@/services/questionGenerators/vocabQuestions'
+import { kanjiSrsKey } from '@/services/questionGenerators/kanjiQuestions'
 import type { UserProgress } from '@/types/progress'
 
 export interface WeakTopic {
@@ -43,6 +45,9 @@ export function computeWeakTopics(progress: UserProgress): WeakTopic[] {
   }
   for (const word of ALL_VOCAB_WORDS) {
     addStat(stats, 'Словарь', progress, vocabSrsKey(word))
+  }
+  for (const entry of ALL_KANJI_ENTRIES) {
+    addStat(stats, 'Кандзи', progress, kanjiSrsKey(entry))
   }
 
   return [...stats.entries()]

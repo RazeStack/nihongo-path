@@ -6,38 +6,26 @@ import { Card } from '@/components/ui/Card'
 import { ProgressBar } from '@/components/ui/ProgressBar'
 import { LEVELS, findBlock } from '@/data/course/levels'
 import { usePracticeSession } from '@/hooks/usePracticeSession'
-import { generateKanaQuestion, type KanaQuestionDirection } from '@/services/questionGenerators/kanaQuestions'
 import { generateGrammarQuestion, type GrammarDrillItem } from '@/services/questionGenerators/grammarQuestions'
-import { generateVocabQuestion, type VocabQuestionDirection } from '@/services/questionGenerators/vocabQuestions'
+import { pickRandom } from '@/utils/shuffle'
 import {
   getKnownGrammarDrillItems,
   getKnownKanaCharacters,
+  getKnownKanjiEntries,
   getKnownVocabWords,
-  type PracticeKanaChar,
-  type PracticeVocabWord,
 } from '@/services/knownItems'
 import { announceRewards } from '@/services/rewardAnnouncer'
 import { useProgressStore } from '@/store/useProgressStore'
+import { KANA_ADAPTER, KANJI_ADAPTER, VOCAB_ADAPTER, type DirectionalAdapter } from '@/services/questionGenerators/directionalAdapters'
 import type { ContentType } from '@/types/content'
-import type { PracticeMode } from '@/types/practice'
+import type { PracticeMode, Question } from '@/types/practice'
+import type { PracticeSourceItem } from '@/services/practiceEngine'
 
 const MODE_OPTIONS: { value: PracticeMode; label: string; description: string }[] = [
   { value: 'sequential', label: 'По порядку', description: 'Идут в порядке изучения' },
   { value: 'random', label: 'Случайный', description: 'Порядок и варианты перемешаны' },
   { value: 'mistakes', label: 'Ошибки', description: 'Только то, в чём ты ошибался' },
   { value: 'review', label: 'Повторение', description: 'То, что пора повторить (SRS)' },
-]
-
-const KANA_DIRECTION_OPTIONS: { value: KanaQuestionDirection | 'mixed'; label: string }[] = [
-  { value: 'char-to-romaji', label: 'Символ → ромадзи' },
-  { value: 'romaji-to-char', label: 'Ромадзи → символ' },
-  { value: 'mixed', label: 'Смешанно' },
-]
-
-const VOCAB_DIRECTION_OPTIONS: { value: VocabQuestionDirection | 'mixed'; label: string }[] = [
-  { value: 'word-to-translation', label: 'Слово → перевод' },
-  { value: 'translation-to-word', label: 'Перевод → слово' },
-  { value: 'mixed', label: 'Смешанно' },
 ]
 
 const SESSION_LENGTH = 12
@@ -66,16 +54,26 @@ export function PracticePage() {
     () => (contentType === 'vocabulary' ? getKnownVocabWords(relevantBlocks, progress) : []),
     [contentType, relevantBlocks, progress],
   )
+  const knownKanjiEntries = useMemo(
+    () => (contentType === 'kanji' ? getKnownKanjiEntries(relevantBlocks, progress) : []),
+    [contentType, relevantBlocks, progress],
+  )
   const itemCount =
-    contentType === 'grammar' ? knownGrammarItems.length : contentType === 'vocabulary' ? knownVocabWords.length : knownChars.length
+    contentType === 'grammar'
+      ? knownGrammarItems.length
+      : contentType === 'vocabulary'
+        ? knownVocabWords.length
+        : contentType === 'kanji'
+          ? knownKanjiEntries.length
+          : knownChars.length
 
   const requestedMode = searchParams.get('mode') as PracticeMode | null
   const [mode, setMode] = useState<PracticeMode>(requestedMode ?? 'random')
-  const [kanaDirection, setKanaDirection] = useState<KanaQuestionDirection | 'mixed'>('mixed')
-  const [vocabDirection, setVocabDirection] = useState<VocabQuestionDirection | 'mixed'>('mixed')
+  const [direction, setDirection] = useState('mixed')
   const [started, setStarted] = useState(searchParams.get('start') === '1')
 
   const backLink = scopedBlock ? `/course/${scopedBlock.levelId}/${scopedBlock.id}` : '/'
+  const adapter = contentType === 'vocabulary' ? VOCAB_ADAPTER : contentType === 'kanji' ? KANJI_ADAPTER : KANA_ADAPTER
 
   if (!started) {
     return (
@@ -114,35 +112,16 @@ export function PracticePage() {
               </div>
             </Card>
 
-            {contentType === 'kana' && (
+            {contentType !== 'grammar' && (
               <Card className="flex flex-col gap-3">
                 <p className="text-sm font-medium text-text">Направление</p>
                 <div className="grid grid-cols-3 gap-2">
-                  {KANA_DIRECTION_OPTIONS.map((option) => (
+                  {[...adapter.directionOptions, { value: 'mixed', label: 'Смешанно' }].map((option) => (
                     <button
                       key={option.value}
-                      onClick={() => setKanaDirection(option.value)}
+                      onClick={() => setDirection(option.value)}
                       className={`rounded-xl border p-2.5 text-sm transition-colors ${
-                        kanaDirection === option.value ? 'border-accent bg-accent-soft text-accent' : 'border-border hover:border-accent'
-                      }`}
-                    >
-                      {option.label}
-                    </button>
-                  ))}
-                </div>
-              </Card>
-            )}
-
-            {contentType === 'vocabulary' && (
-              <Card className="flex flex-col gap-3">
-                <p className="text-sm font-medium text-text">Направление</p>
-                <div className="grid grid-cols-3 gap-2">
-                  {VOCAB_DIRECTION_OPTIONS.map((option) => (
-                    <button
-                      key={option.value}
-                      onClick={() => setVocabDirection(option.value)}
-                      className={`rounded-xl border p-2.5 text-sm transition-colors ${
-                        vocabDirection === option.value ? 'border-accent bg-accent-soft text-accent' : 'border-border hover:border-accent'
+                        direction === option.value ? 'border-accent bg-accent-soft text-accent' : 'border-border hover:border-accent'
                       }`}
                     >
                       {option.label}
@@ -159,29 +138,22 @@ export function PracticePage() {
     )
   }
 
+  const exit = () => setStarted(false)
+
   if (contentType === 'grammar') {
-    return <RunningGrammarPractice items={knownGrammarItems} mode={mode} backLink={backLink} onExit={() => setStarted(false)} />
+    return <RunningGrammarPractice items={knownGrammarItems} mode={mode} backLink={backLink} onExit={exit} />
   }
   if (contentType === 'vocabulary') {
     return (
-      <RunningVocabPractice
-        words={knownVocabWords}
-        mode={mode}
-        direction={vocabDirection}
-        backLink={backLink}
-        onExit={() => setStarted(false)}
-      />
+      <RunningDirectionalPractice items={knownVocabWords} mode={mode} direction={direction} adapter={VOCAB_ADAPTER} backLink={backLink} onExit={exit} />
     )
   }
-  return (
-    <RunningKanaPractice
-      knownChars={knownChars}
-      mode={mode}
-      direction={kanaDirection}
-      backLink={backLink}
-      onExit={() => setStarted(false)}
-    />
-  )
+  if (contentType === 'kanji') {
+    return (
+      <RunningDirectionalPractice items={knownKanjiEntries} mode={mode} direction={direction} adapter={KANJI_ADAPTER} backLink={backLink} onExit={exit} />
+    )
+  }
+  return <RunningDirectionalPractice items={knownChars} mode={mode} direction={direction} adapter={KANA_ADAPTER} backLink={backLink} onExit={exit} />
 }
 
 function SessionEmptyState({ mode, onExit }: { mode: PracticeMode; onExit: () => void }) {
@@ -229,16 +201,18 @@ function SessionResults({
   )
 }
 
-function RunningKanaPractice({
-  knownChars,
+function RunningDirectionalPractice<T extends PracticeSourceItem>({
+  items,
   mode,
   direction,
+  adapter,
   backLink,
   onExit,
 }: {
-  knownChars: PracticeKanaChar[]
+  items: T[]
   mode: PracticeMode
-  direction: KanaQuestionDirection | 'mixed'
+  direction: string
+  adapter: DirectionalAdapter<T>
   backLink: string
   onExit: () => void
 }) {
@@ -246,66 +220,11 @@ function RunningKanaPractice({
   const finishPracticeSession = useProgressStore((state) => state.finishPracticeSession)
 
   const session = usePracticeSession({
-    items: knownChars,
+    items,
     mode,
-    count: Math.min(SESSION_LENGTH, knownChars.length),
-    generateQuestion: (item, pool) =>
-      generateKanaQuestion(item, pool, direction === 'mixed' ? (Math.random() > 0.5 ? 'char-to-romaji' : 'romaji-to-char') : direction),
-  })
-
-  useEffect(() => {
-    if (session.isFinished && session.result) {
-      const result = finishPracticeSession(session.result.totalCount)
-      announceRewards(xpBefore, result)
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [session.isFinished])
-
-  if (session.questions.length === 0) return <SessionEmptyState mode={mode} onExit={onExit} />
-  if (session.isFinished && session.result) return <SessionResults {...session.result} backLink={backLink} onExit={onExit} />
-
-  return (
-    <div className="mx-auto flex max-w-xl flex-col gap-6">
-      <ProgressBar percent={(session.currentIndex / session.questions.length) * 100} />
-      {session.currentQuestion && (
-        <QuestionCard
-          question={session.currentQuestion}
-          selectedAnswer={session.selectedAnswer}
-          onAnswer={session.submitAnswer}
-          onNext={session.goToNext}
-          isLast={session.currentIndex === session.questions.length - 1}
-        />
-      )}
-    </div>
-  )
-}
-
-function RunningVocabPractice({
-  words,
-  mode,
-  direction,
-  backLink,
-  onExit,
-}: {
-  words: PracticeVocabWord[]
-  mode: PracticeMode
-  direction: VocabQuestionDirection | 'mixed'
-  backLink: string
-  onExit: () => void
-}) {
-  const xpBefore = useProgressStore((state) => state.progress.xp)
-  const finishPracticeSession = useProgressStore((state) => state.finishPracticeSession)
-
-  const session = usePracticeSession({
-    items: words,
-    mode,
-    count: Math.min(SESSION_LENGTH, words.length),
-    generateQuestion: (item, pool) =>
-      generateVocabQuestion(
-        item,
-        pool,
-        direction === 'mixed' ? (Math.random() > 0.5 ? 'word-to-translation' : 'translation-to-word') : direction,
-      ),
+    count: Math.min(SESSION_LENGTH, items.length),
+    generateQuestion: (item, pool): Question =>
+      adapter.generateQuestion(item, pool, direction === 'mixed' ? pickRandom(adapter.directionOptions, 1)[0].value : direction),
   })
 
   useEffect(() => {

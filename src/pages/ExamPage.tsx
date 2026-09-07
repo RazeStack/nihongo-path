@@ -4,25 +4,18 @@ import { QuestionCard } from '@/components/practice/QuestionCard'
 import { Button } from '@/components/ui/Button'
 import { Card } from '@/components/ui/Card'
 import { ProgressBar } from '@/components/ui/ProgressBar'
-import { findKanaCharById } from '@/data/kana/allKanaCharacters'
 import { findGrammarPointById } from '@/data/grammar/allGrammarPoints'
-import { findVocabWordById } from '@/data/vocabulary/allVocabWords'
 import { findBlock, findLevel, LEVELS } from '@/data/course/levels'
 import { usePracticeSession } from '@/hooks/usePracticeSession'
-import { generateKanaQuestion } from '@/services/questionGenerators/kanaQuestions'
 import { generateGrammarQuestion, type GrammarDrillItem } from '@/services/questionGenerators/grammarQuestions'
-import { generateVocabQuestion } from '@/services/questionGenerators/vocabQuestions'
+import { KANA_ADAPTER, KANJI_ADAPTER, VOCAB_ADAPTER, type DirectionalAdapter } from '@/services/questionGenerators/directionalAdapters'
+import { pickRandom } from '@/utils/shuffle'
 import { getBestExamScore, isBlockLessonsComplete, isBlockUnlocked, isLevelUnlocked } from '@/services/progressService'
-import {
-  getKnownGrammarDrillItems,
-  getKnownKanaCharacters,
-  getKnownVocabWords,
-  type PracticeKanaChar,
-  type PracticeVocabWord,
-} from '@/services/knownItems'
+import { getKnownGrammarDrillItems, getKnownKanaCharacters, getKnownKanjiEntries, getKnownVocabWords } from '@/services/knownItems'
 import { announceRewards } from '@/services/rewardAnnouncer'
 import { useProgressStore } from '@/store/useProgressStore'
-import type { AnsweredQuestion } from '@/types/practice'
+import type { PracticeSourceItem } from '@/services/practiceEngine'
+import type { AnsweredQuestion, Question } from '@/types/practice'
 
 export function ExamPage() {
   const { levelId = '', blockId = '' } = useParams()
@@ -70,18 +63,22 @@ export function ExamPage() {
     xpReward: block.exam.xpReward,
     passingScore: block.exam.passingScore,
     questionCount: block.exam.questionCount,
+    onRetry: () => setStarted(false),
   }
 
   if (block.contentType === 'grammar') {
-    return <RunningGrammarExam {...examMeta} items={getKnownGrammarDrillItems([block], progress)} onRetry={() => setStarted(false)} />
+    return <RunningGrammarExam {...examMeta} items={getKnownGrammarDrillItems([block], progress)} />
   }
   if (block.contentType === 'vocabulary') {
-    return <RunningVocabExam {...examMeta} words={getKnownVocabWords([block], progress)} onRetry={() => setStarted(false)} />
+    return <RunningDirectionalExam {...examMeta} items={getKnownVocabWords([block], progress)} adapter={VOCAB_ADAPTER} />
   }
-  return <RunningKanaExam {...examMeta} knownChars={getKnownKanaCharacters([block], progress)} onRetry={() => setStarted(false)} />
+  if (block.contentType === 'kanji') {
+    return <RunningDirectionalExam {...examMeta} items={getKnownKanjiEntries([block], progress)} adapter={KANJI_ADAPTER} />
+  }
+  return <RunningDirectionalExam {...examMeta} items={getKnownKanaCharacters([block], progress)} adapter={KANA_ADAPTER} />
 }
 
-/** Считает точность по группам (ряды каны / грамматические конструкции) и возвращает те, где она ниже 80%. */
+/** Считает точность по группам (ряды каны / темы грамматики / категории слов) и возвращает те, где она ниже 80%. */
 function computeWeakGroups(answered: AnsweredQuestion[], getGroupLabel: (srsKey: string) => string | undefined): string[] {
   const stats = new Map<string, { correct: number; total: number }>()
   for (const entry of answered) {
@@ -138,26 +135,12 @@ interface ExamMeta {
   onRetry: () => void
 }
 
-function RunningKanaExam({ knownChars, ...meta }: ExamMeta & { knownChars: PracticeKanaChar[] }) {
+/** Использует useProgressStore.recordExamAttempt при завершении сессии и показывает результаты — общая логика для всех типов контента. */
+function useExamCompletion(meta: ExamMeta, session: ReturnType<typeof usePracticeSession>, weakTopics: string[]) {
   const xpBefore = useProgressStore((state) => state.progress.xp)
   const recordExamAttempt = useProgressStore((state) => state.recordExamAttempt)
   const [rewardShown, setRewardShown] = useState(false)
-
-  const session = usePracticeSession({
-    items: knownChars,
-    mode: 'exam',
-    count: Math.min(meta.questionCount, knownChars.length),
-    generateQuestion: (item, pool) => generateKanaQuestion(item, pool, Math.random() > 0.5 ? 'char-to-romaji' : 'romaji-to-char'),
-  })
-
   const passed = session.result ? session.result.scorePercent >= meta.passingScore * 100 : false
-  const weakTopics = useMemo(
-    () =>
-      session.result
-        ? computeWeakGroups(session.answered, (srsKey) => findKanaCharById(srsKey.split(':')[1])?.row)
-        : [],
-    [session.result, session.answered],
-  )
 
   useEffect(() => {
     if (session.isFinished && session.result && !rewardShown) {
@@ -181,83 +164,33 @@ function RunningKanaExam({ knownChars, ...meta }: ExamMeta & { knownChars: Pract
 
   if (session.isFinished && session.result) {
     return (
-      <ExamResults
-        passed={passed}
-        weakTopics={weakTopics}
-        levelId={meta.levelId}
-        blockId={meta.blockId}
-        onRetry={meta.onRetry}
-        {...session.result}
-      />
+      <ExamResults passed={passed} weakTopics={weakTopics} levelId={meta.levelId} blockId={meta.blockId} onRetry={meta.onRetry} {...session.result} />
     )
   }
-
   return <ExamQuestion session={session} />
 }
 
-function RunningVocabExam({ words, ...meta }: ExamMeta & { words: PracticeVocabWord[] }) {
-  const xpBefore = useProgressStore((state) => state.progress.xp)
-  const recordExamAttempt = useProgressStore((state) => state.recordExamAttempt)
-  const [rewardShown, setRewardShown] = useState(false)
-
+function RunningDirectionalExam<T extends PracticeSourceItem>({
+  items,
+  adapter,
+  ...meta
+}: ExamMeta & { items: T[]; adapter: DirectionalAdapter<T> }) {
   const session = usePracticeSession({
-    items: words,
+    items,
     mode: 'exam',
-    count: Math.min(meta.questionCount, words.length),
-    generateQuestion: (item, pool) =>
-      generateVocabQuestion(item, pool, Math.random() > 0.5 ? 'word-to-translation' : 'translation-to-word'),
+    count: Math.min(meta.questionCount, items.length),
+    generateQuestion: (item, pool): Question => adapter.generateQuestion(item, pool, pickRandom(adapter.directionOptions, 1)[0].value),
   })
 
-  const passed = session.result ? session.result.scorePercent >= meta.passingScore * 100 : false
   const weakTopics = useMemo(
-    () =>
-      session.result
-        ? computeWeakGroups(session.answered, (srsKey) => findVocabWordById(srsKey.split(':')[1])?.category)
-        : [],
-    [session.result, session.answered],
+    () => (session.result ? computeWeakGroups(session.answered, adapter.getGroupLabel) : []),
+    [session.result, session.answered, adapter],
   )
 
-  useEffect(() => {
-    if (session.isFinished && session.result && !rewardShown) {
-      setRewardShown(true)
-      const result = recordExamAttempt(
-        meta.examId,
-        {
-          date: new Date().toISOString(),
-          scorePercent: session.result.scorePercent,
-          passed,
-          correctCount: session.result.correctCount,
-          totalCount: session.result.totalCount,
-          durationSeconds: session.result.durationSeconds,
-        },
-        meta.xpReward,
-      )
-      announceRewards(xpBefore, result)
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [session.isFinished])
-
-  if (session.isFinished && session.result) {
-    return (
-      <ExamResults
-        passed={passed}
-        weakTopics={weakTopics}
-        levelId={meta.levelId}
-        blockId={meta.blockId}
-        onRetry={meta.onRetry}
-        {...session.result}
-      />
-    )
-  }
-
-  return <ExamQuestion session={session} />
+  return useExamCompletion(meta, session, weakTopics)
 }
 
 function RunningGrammarExam({ items, ...meta }: ExamMeta & { items: GrammarDrillItem[] }) {
-  const xpBefore = useProgressStore((state) => state.progress.xp)
-  const recordExamAttempt = useProgressStore((state) => state.recordExamAttempt)
-  const [rewardShown, setRewardShown] = useState(false)
-
   const session = usePracticeSession({
     items,
     mode: 'exam',
@@ -265,7 +198,6 @@ function RunningGrammarExam({ items, ...meta }: ExamMeta & { items: GrammarDrill
     generateQuestion: generateGrammarQuestion,
   })
 
-  const passed = session.result ? session.result.scorePercent >= meta.passingScore * 100 : false
   const weakTopics = useMemo(
     () =>
       session.result
@@ -274,40 +206,7 @@ function RunningGrammarExam({ items, ...meta }: ExamMeta & { items: GrammarDrill
     [session.result, session.answered],
   )
 
-  useEffect(() => {
-    if (session.isFinished && session.result && !rewardShown) {
-      setRewardShown(true)
-      const result = recordExamAttempt(
-        meta.examId,
-        {
-          date: new Date().toISOString(),
-          scorePercent: session.result.scorePercent,
-          passed,
-          correctCount: session.result.correctCount,
-          totalCount: session.result.totalCount,
-          durationSeconds: session.result.durationSeconds,
-        },
-        meta.xpReward,
-      )
-      announceRewards(xpBefore, result)
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [session.isFinished])
-
-  if (session.isFinished && session.result) {
-    return (
-      <ExamResults
-        passed={passed}
-        weakTopics={weakTopics}
-        levelId={meta.levelId}
-        blockId={meta.blockId}
-        onRetry={meta.onRetry}
-        {...session.result}
-      />
-    )
-  }
-
-  return <ExamQuestion session={session} />
+  return useExamCompletion(meta, session, weakTopics)
 }
 
 function ExamQuestion({ session }: { session: ReturnType<typeof usePracticeSession> }) {

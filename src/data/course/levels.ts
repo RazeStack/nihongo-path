@@ -1,6 +1,8 @@
 import { N5_GRAMMAR_BASICS_BLOCK } from '@/data/grammar/n5GrammarBasics.block'
 import { HIRAGANA_BLOCK } from '@/data/hiragana/hiragana.block'
 import { KATAKANA_BLOCK } from '@/data/katakana/katakana.block'
+import { N5_KANJI_BLOCK } from '@/data/kanji/n5Kanji.block'
+import { N5_VERBS_BLOCK } from '@/data/verbs/n5Verbs.block'
 import { N5_VOCABULARY_BLOCK } from '@/data/vocabulary/n5Vocabulary.block'
 import type { LevelDefinition } from '@/types/content'
 
@@ -16,12 +18,10 @@ export const LEVELS: LevelDefinition[] = [
     title: 'N5',
     description: 'Уровень абсолютного новичка: азбуки, базовая грамматика и первые слова.',
     order: 1,
-    blocks: [HIRAGANA_BLOCK, KATAKANA_BLOCK, N5_GRAMMAR_BASICS_BLOCK, N5_VOCABULARY_BLOCK],
+    blocks: [HIRAGANA_BLOCK, KATAKANA_BLOCK, N5_GRAMMAR_BASICS_BLOCK, N5_VOCABULARY_BLOCK, N5_KANJI_BLOCK, N5_VERBS_BLOCK],
     plannedBlocks: [
-      { title: 'Базовые глаголы', description: 'Словарная форма и вежливая форма на -masu' },
       { title: 'Прилагательные', description: 'い-прилагательные и な-прилагательные' },
       { title: 'Числа и время', description: 'Счёт предметов, часы, дни недели' },
-      { title: 'Кандзи N5', description: 'Первые ~100 иероглифов' },
       { title: 'Чтение', description: 'Простые тексты и диалоги' },
       { title: 'Экзамен N5', description: 'Итоговая проверка перед переходом на N4' },
     ],

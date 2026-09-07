@@ -1,10 +1,12 @@
 import { findKanaCharById } from '@/data/kana/allKanaCharacters'
 import { findGrammarPointById } from '@/data/grammar/allGrammarPoints'
 import { findVocabWordById } from '@/data/vocabulary/allVocabWords'
+import { findKanjiEntryById } from '@/data/kanji/allKanjiEntries'
 import { kanaSrsKey } from '@/services/questionGenerators/kanaQuestions'
 import { flattenDrillItems, type GrammarDrillItem } from '@/services/questionGenerators/grammarQuestions'
 import { vocabSrsKey } from '@/services/questionGenerators/vocabQuestions'
-import type { BlockDefinition, KanaChar, VocabWord } from '@/types/content'
+import { kanjiSrsKey } from '@/services/questionGenerators/kanjiQuestions'
+import type { BlockDefinition, KanaChar, KanjiEntry, VocabWord } from '@/types/content'
 import type { UserProgress } from '@/types/progress'
 
 /** KanaChar с добавленным srsKey — так его можно напрямую скормить универсальному usePracticeSession. */
@@ -50,4 +52,14 @@ export function getKnownVocabWords(blocks: BlockDefinition[], progress: UserProg
     .map(findVocabWordById)
     .filter((word): word is VocabWord => word !== undefined)
     .map((word) => ({ ...word, srsKey: vocabSrsKey(word) }))
+}
+
+export type PracticeKanjiEntry = KanjiEntry & { srsKey: string }
+
+/** То же самое, но для кандзи. */
+export function getKnownKanjiEntries(blocks: BlockDefinition[], progress: UserProgress): PracticeKanjiEntry[] {
+  return getKnownItemIds(blocks, progress)
+    .map(findKanjiEntryById)
+    .filter((entry): entry is KanjiEntry => entry !== undefined)
+    .map((entry) => ({ ...entry, srsKey: kanjiSrsKey(entry) }))
 }
