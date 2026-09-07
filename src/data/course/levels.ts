@@ -8,6 +8,7 @@ import { N4_KANJI_BLOCK } from '@/data/n4kanji/n4Kanji.block'
 import { N4_READING_BLOCK } from '@/data/n4reading/n4Reading.block'
 import { N4_VOCABULARY_BLOCK } from '@/data/n4vocabulary/n4Vocabulary.block'
 import { N4_FINAL_EXAM_BLOCK } from '@/data/finalExam/n4FinalExam.block'
+import { N3_GRAMMAR_BLOCK } from '@/data/n3grammar/n3Grammar.block'
 import { N5_KANJI_BLOCK } from '@/data/kanji/n5Kanji.block'
 import { N5_NUMBERS_TIME_BLOCK } from '@/data/numbers/n5NumbersTime.block'
 import { N5_READING_BLOCK } from '@/data/reading/n5Reading.block'
@@ -54,8 +55,13 @@ export const LEVELS: LevelDefinition[] = [
     description: 'Переход к среднему уровню: устойчивые выражения и сложные конструкции.',
     order: 3,
     prerequisiteLevelId: 'n4',
-    blocks: [],
-    plannedBlocks: [{ title: 'Контент N3', description: 'Появится по мере прохождения N4' }],
+    blocks: [N3_GRAMMAR_BLOCK],
+    plannedBlocks: [
+      { title: 'Словарь N3', description: 'Устойчивые выражения и более абстрактная лексика' },
+      { title: 'Кандзи N3', description: 'Больше иероглифов' },
+      { title: 'Чтение N3', description: 'Статьи, объявления, письма' },
+      { title: 'Экзамен N3', description: 'Итоговая проверка перед переходом на N2' },
+    ],
   },
   {
     id: 'n2',
