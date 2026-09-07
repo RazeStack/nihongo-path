@@ -6,7 +6,7 @@ export const N5_ADJECTIVES_BLOCK: BlockDefinition = {
   levelId: 'n5',
   title: 'Прилагательные',
   description: '5 い-прилагательных и 5 な-прилагательных: как устроено настоящее/прошедшее время и отрицание.',
-  order: 7,
+  order: 8,
   contentType: 'grammar',
   prerequisiteBlockId: 'n5-verbs',
   lessons: N5_ADJECTIVES_LESSONS,

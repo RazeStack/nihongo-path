@@ -1,9 +1,14 @@
 import { N5_GRAMMAR_BASICS_BLOCK } from '@/data/grammar/n5GrammarBasics.block'
+import { N5_GRAMMAR_PARTICLES2_BLOCK } from '@/data/grammar/n5GrammarParticles2.block'
+import { N5_GRAMMAR_EXTENDED_BLOCK } from '@/data/grammar/n5GrammarExtended.block'
 import { HIRAGANA_BLOCK } from '@/data/hiragana/hiragana.block'
 import { KATAKANA_BLOCK } from '@/data/katakana/katakana.block'
 import { N5_ADJECTIVES_BLOCK } from '@/data/adjectives/n5Adjectives.block'
 import { N5_FINAL_EXAM_BLOCK } from '@/data/finalExam/n5FinalExam.block'
 import { N4_GRAMMAR_BLOCK } from '@/data/n4grammar/n4Grammar.block'
+import { N4_GRAMMAR_POTENTIAL_BLOCK } from '@/data/n4grammar/n4GrammarPotential.block'
+import { N4_GRAMMAR_SPECULATION_BLOCK } from '@/data/n4grammar/n4GrammarSpeculation.block'
+import { N4_GRAMMAR_ADDITIONAL_BLOCK } from '@/data/n4grammar/n4GrammarAdditional.block'
 import { N4_KANJI_BLOCK } from '@/data/n4kanji/n4Kanji.block'
 import { N4_READING_BLOCK } from '@/data/n4reading/n4Reading.block'
 import { N4_VOCABULARY_BLOCK } from '@/data/n4vocabulary/n4Vocabulary.block'
@@ -41,10 +46,12 @@ export const LEVELS: LevelDefinition[] = [
       HIRAGANA_BLOCK,
       KATAKANA_BLOCK,
       N5_GRAMMAR_BASICS_BLOCK,
+      N5_GRAMMAR_PARTICLES2_BLOCK,
       N5_VOCABULARY_BLOCK,
       N5_KANJI_BLOCK,
       N5_VERBS_BLOCK,
       N5_ADJECTIVES_BLOCK,
+      N5_GRAMMAR_EXTENDED_BLOCK,
       N5_NUMBERS_TIME_BLOCK,
       N5_READING_BLOCK,
       N5_FINAL_EXAM_BLOCK,
@@ -56,7 +63,16 @@ export const LEVELS: LevelDefinition[] = [
     description: 'Более сложная грамматика, больше кандзи и связные тексты.',
     order: 2,
     prerequisiteLevelId: 'n5',
-    blocks: [N4_GRAMMAR_BLOCK, N4_VOCABULARY_BLOCK, N4_KANJI_BLOCK, N4_READING_BLOCK, N4_FINAL_EXAM_BLOCK],
+    blocks: [
+      N4_GRAMMAR_BLOCK,
+      N4_GRAMMAR_POTENTIAL_BLOCK,
+      N4_GRAMMAR_SPECULATION_BLOCK,
+      N4_GRAMMAR_ADDITIONAL_BLOCK,
+      N4_VOCABULARY_BLOCK,
+      N4_KANJI_BLOCK,
+      N4_READING_BLOCK,
+      N4_FINAL_EXAM_BLOCK,
+    ],
   },
   {
     id: 'n3',

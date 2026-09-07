@@ -1,16 +1,26 @@
 import { N5_GRAMMAR_BASICS_POINTS } from './n5GrammarBasics.points'
+import { N5_GRAMMAR_PARTICLES2_POINTS } from './n5GrammarParticles2.points'
+import { N5_GRAMMAR_EXTENDED_POINTS } from './n5GrammarExtended.points'
 import { N5_VERBS_POINTS } from '@/data/verbs/n5Verbs.points'
 import { N5_ADJECTIVES_POINTS } from '@/data/adjectives/n5Adjectives.points'
 import { N4_GRAMMAR_POINTS } from '@/data/n4grammar/n4Grammar.points'
+import { N4_GRAMMAR_POTENTIAL_POINTS } from '@/data/n4grammar/n4GrammarPotential.points'
+import { N4_GRAMMAR_SPECULATION_POINTS } from '@/data/n4grammar/n4GrammarSpeculation.points'
+import { N4_GRAMMAR_ADDITIONAL_POINTS } from '@/data/n4grammar/n4GrammarAdditional.points'
 import { N3_GRAMMAR_POINTS } from '@/data/n3grammar/n3Grammar.points'
 import { N2_GRAMMAR_POINTS } from '@/data/n2grammar/n2Grammar.points'
 import type { GrammarPoint } from '@/types/content'
 
 export const ALL_GRAMMAR_POINTS: GrammarPoint[] = [
   ...N5_GRAMMAR_BASICS_POINTS,
+  ...N5_GRAMMAR_PARTICLES2_POINTS,
   ...N5_VERBS_POINTS,
   ...N5_ADJECTIVES_POINTS,
+  ...N5_GRAMMAR_EXTENDED_POINTS,
   ...N4_GRAMMAR_POINTS,
+  ...N4_GRAMMAR_POTENTIAL_POINTS,
+  ...N4_GRAMMAR_SPECULATION_POINTS,
+  ...N4_GRAMMAR_ADDITIONAL_POINTS,
   ...N3_GRAMMAR_POINTS,
   ...N2_GRAMMAR_POINTS,
 ]
