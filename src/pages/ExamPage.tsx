@@ -11,7 +11,8 @@ import { generateGrammarQuestion, type GrammarDrillItem } from '@/services/quest
 import { KANA_ADAPTER, KANJI_ADAPTER, VOCAB_ADAPTER, type DirectionalAdapter } from '@/services/questionGenerators/directionalAdapters'
 import { getFinalExamQuestionPool, labelForSrsKey } from '@/services/finalExamQuestions'
 import { pickRandom } from '@/utils/shuffle'
-import { getBestExamScore, isBlockLessonsComplete, isBlockUnlocked, isLevelUnlocked } from '@/services/progressService'
+import { getBestExamScore, hasPassedExam, isBlockLessonsComplete, isBlockUnlocked, isLevelUnlocked } from '@/services/progressService'
+import { CourseCompletionCelebration } from '@/components/course/CourseCompletionCelebration'
 import {
   getKnownGrammarDrillItems,
   getKnownKanaCharacters,
@@ -24,6 +25,9 @@ import { announceRewards } from '@/services/rewardAnnouncer'
 import { useProgressStore } from '@/store/useProgressStore'
 import type { PracticeSourceItem } from '@/services/practiceEngine'
 import type { AnsweredQuestion, Question } from '@/types/practice'
+
+/** Единственный экзамен, прохождение которого впервые означает "весь курс пройден целиком". */
+const COURSE_COMPLETION_EXAM_ID = 'n2-final-exam-exam'
 
 export function ExamPage() {
   const { levelId = '', blockId = '' } = useParams()
@@ -151,14 +155,17 @@ interface ExamMeta {
 
 /** Использует useProgressStore.recordExamAttempt при завершении сессии и показывает результаты — общая логика для всех типов контента. */
 function useExamCompletion(meta: ExamMeta, session: ReturnType<typeof usePracticeSession>, weakTopics: string[]) {
-  const xpBefore = useProgressStore((state) => state.progress.xp)
+  const progress = useProgressStore((state) => state.progress)
+  const xpBefore = progress.xp
   const recordExamAttempt = useProgressStore((state) => state.recordExamAttempt)
   const [rewardShown, setRewardShown] = useState(false)
+  const [showCelebration, setShowCelebration] = useState(false)
   const passed = session.result ? session.result.scorePercent >= meta.passingScore * 100 : false
 
   useEffect(() => {
     if (session.isFinished && session.result && !rewardShown) {
       setRewardShown(true)
+      const isCourseCompletion = meta.examId === COURSE_COMPLETION_EXAM_ID && passed && !hasPassedExam(progress, meta.examId)
       const result = recordExamAttempt(
         meta.examId,
         {
@@ -172,13 +179,17 @@ function useExamCompletion(meta: ExamMeta, session: ReturnType<typeof usePractic
         meta.xpReward,
       )
       announceRewards(xpBefore, result)
+      if (isCourseCompletion) setShowCelebration(true)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [session.isFinished])
 
   if (session.isFinished && session.result) {
     return (
-      <ExamResults passed={passed} weakTopics={weakTopics} levelId={meta.levelId} blockId={meta.blockId} onRetry={meta.onRetry} {...session.result} />
+      <>
+        <ExamResults passed={passed} weakTopics={weakTopics} levelId={meta.levelId} blockId={meta.blockId} onRetry={meta.onRetry} {...session.result} />
+        {showCelebration && <CourseCompletionCelebration progress={progress} onClose={() => setShowCelebration(false)} />}
+      </>
     )
   }
   return <ExamQuestion session={session} />
