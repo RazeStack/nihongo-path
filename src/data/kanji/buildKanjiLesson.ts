@@ -149,6 +149,9 @@ function slugify(text: string): string {
     'Характер и сравнение': 'character-comparison-kanji',
     'Действия и усилия': 'actions-efforts-kanji',
     'Точность и снисхождение': 'precision-leniency-kanji',
+    'Впечатления и чувства': 'impressions-feelings-kanji',
+    'Эмоции и оценка': 'emotions-evaluation-kanji',
+    'Действия и искусство': 'actions-art-kanji',
   }
   return map[text] ?? text.toLowerCase()
 }
