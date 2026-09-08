@@ -19,6 +19,21 @@ export function createInitialProgress(): UserProgress {
   }
 }
 
+/** Проверяет, что загруженный JSON-файл действительно похож на резервную копию прогресса. */
+export function isValidProgressShape(value: unknown): value is UserProgress {
+  if (typeof value !== 'object' || value === null) return false
+  const candidate = value as Record<string, unknown>
+  return (
+    typeof candidate.xp === 'number' &&
+    Array.isArray(candidate.completedLessons) &&
+    typeof candidate.srs === 'object' &&
+    candidate.srs !== null &&
+    typeof candidate.blockExamAttempts === 'object' &&
+    candidate.blockExamAttempts !== null &&
+    typeof candidate.createdAt === 'string'
+  )
+}
+
 export function hasPassedExam(progress: UserProgress, blockId: string): boolean {
   const attempts = progress.blockExamAttempts[blockId] ?? []
   return attempts.some((attempt) => attempt.passed)

@@ -1,20 +1,64 @@
-import { useState } from 'react'
+import { useRef, useState, type ChangeEvent } from 'react'
 import { Button } from '@/components/ui/Button'
 import { Card } from '@/components/ui/Card'
 import { ProgressBar } from '@/components/ui/ProgressBar'
 import { ACHIEVEMENTS } from '@/data/achievements'
 import { LEVELS } from '@/data/course/levels'
-import { isLevelCompleted, isLevelUnlocked } from '@/services/progressService'
+import { isLevelCompleted, isLevelUnlocked, isValidProgressShape } from '@/services/progressService'
 import { calculateProfileLevel } from '@/services/xp'
 import { useProgressStore } from '@/store/useProgressStore'
 import { useSettingsStore } from '@/store/useSettingsStore'
+import type { UserProgress } from '@/types/progress'
 
 export function ProfilePage() {
   const progress = useProgressStore((state) => state.progress)
   const resetProgress = useProgressStore((state) => state.resetProgress)
+  const importProgress = useProgressStore((state) => state.importProgress)
   const theme = useSettingsStore((state) => state.theme)
   const setTheme = useSettingsStore((state) => state.setTheme)
   const [confirmingReset, setConfirmingReset] = useState(false)
+  const [pendingImport, setPendingImport] = useState<UserProgress | null>(null)
+  const [importError, setImportError] = useState<string | null>(null)
+  const fileInputRef = useRef<HTMLInputElement>(null)
+
+  function handleExport() {
+    const blob = new Blob([JSON.stringify(progress, null, 2)], { type: 'application/json' })
+    const url = URL.createObjectURL(blob)
+    const link = document.createElement('a')
+    link.href = url
+    link.download = `nihongo-path-progress-${new Date().toISOString().slice(0, 10)}.json`
+    link.click()
+    URL.revokeObjectURL(url)
+  }
+
+  function handleFileSelected(event: ChangeEvent<HTMLInputElement>) {
+    const file = event.target.files?.[0]
+    if (!file) return
+
+    const reader = new FileReader()
+    reader.onload = () => {
+      try {
+        const parsed = JSON.parse(String(reader.result))
+        if (!isValidProgressShape(parsed)) {
+          setImportError('Файл не похож на резервную копию прогресса Nihongo Path.')
+          return
+        }
+        setImportError(null)
+        setPendingImport(parsed)
+      } catch {
+        setImportError('Не удалось прочитать файл — он повреждён или это не JSON.')
+      }
+    }
+    reader.readAsText(file)
+
+    event.target.value = ''
+  }
+
+  function handleConfirmImport() {
+    if (!pendingImport) return
+    importProgress(pendingImport)
+    setPendingImport(null)
+  }
 
   const levelInfo = calculateProfileLevel(progress.xp)
   const unlockedAchievements = ACHIEVEMENTS.filter((a) => progress.unlockedAchievements[a.id]).length
@@ -67,6 +111,40 @@ export function ProfilePage() {
             </Button>
           </div>
         </div>
+      </Card>
+
+      <Card>
+        <h2 className="mb-2 font-semibold text-text">Резервная копия</h2>
+        <p className="mb-3 text-sm text-text-muted">
+          Прогресс хранится только в этом браузере на этом устройстве. Скачай файл, чтобы перенести его на другое устройство или
+          подстраховаться перед очисткой браузера.
+        </p>
+        <div className="flex flex-wrap gap-2">
+          <Button variant="secondary" onClick={handleExport}>
+            Скачать резервную копию
+          </Button>
+          <Button variant="secondary" onClick={() => fileInputRef.current?.click()}>
+            Загрузить резервную копию
+          </Button>
+          <input ref={fileInputRef} type="file" accept="application/json,.json" className="hidden" onChange={handleFileSelected} />
+        </div>
+        {importError && <p className="mt-3 text-sm text-danger">{importError}</p>}
+        {pendingImport && (
+          <div className="mt-3 rounded-xl bg-surface-2 p-3">
+            <p className="mb-3 text-sm text-text">
+              Заменить текущий прогресс данными из файла? В нём {pendingImport.xp} XP, создан {pendingImport.createdAt}. Текущий
+              прогресс на этом устройстве будет потерян без возможности восстановления.
+            </p>
+            <div className="flex gap-2">
+              <Button variant="danger" onClick={handleConfirmImport}>
+                Да, заменить
+              </Button>
+              <Button variant="secondary" onClick={() => setPendingImport(null)}>
+                Отмена
+              </Button>
+            </div>
+          </div>
+        )}
       </Card>
 
       <Card className="border-danger/30">

@@ -45,6 +45,7 @@ interface ProgressStore {
   ) => { xpGained: number; newAchievements: AchievementDefinition[] }
   ensureDailyQuests: () => void
   resetProgress: () => void
+  importProgress: (next: UserProgress) => void
 }
 
 export const useProgressStore = create<ProgressStore>((set, get) => {
@@ -148,6 +149,10 @@ export const useProgressStore = create<ProgressStore>((set, get) => {
 
     resetProgress() {
       persistAndSet(createInitialProgress())
+    },
+
+    importProgress(next) {
+      persistAndSet(next)
     },
   }
 })
