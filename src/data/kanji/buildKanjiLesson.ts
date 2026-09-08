@@ -140,6 +140,15 @@ function slugify(text: string): string {
     'Тело и чувства': 'body-feelings-kanji',
     'Творчество и выбор': 'creativity-choice-kanji',
     'Общество и старшинство': 'society-seniority-kanji',
+    'Учреждения и виды': 'institutions-types-kanji',
+    'Общество и техника': 'society-tech-kanji',
+    'Позиция и творчество': 'position-creativity-kanji',
+    'Работа и рост': 'work-growth-kanji',
+    'Эмоции и достижения': 'emotions-achievements-kanji',
+    'Право и последствия': 'law-consequences-kanji',
+    'Характер и сравнение': 'character-comparison-kanji',
+    'Действия и усилия': 'actions-efforts-kanji',
+    'Точность и снисхождение': 'precision-leniency-kanji',
   }
   return map[text] ?? text.toLowerCase()
 }
