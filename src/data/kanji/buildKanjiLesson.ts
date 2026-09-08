@@ -124,6 +124,22 @@ function slugify(text: string): string {
     'Чувства и восприятие': 'feelings-perception-kanji',
     'Итоговые понятия': 'final-concepts-kanji',
     'Общество и жизнь': 'society-life-kanji',
+    'Оценка и характеристики': 'evaluation-characteristics-kanji',
+    'Правила и структура': 'rules-structure-kanji',
+    'Путь и перемены': 'path-changes-kanji',
+    'Дом и повседневность': 'home-everyday-kanji',
+    'Общество и статус': 'society-status-kanji',
+    'Работа и производство': 'work-production-kanji',
+    'Природа и материалы': 'nature-materials-kanji',
+    'Дела и оплата': 'affairs-payment-kanji',
+    'Порядок и время': 'order-time-kanji',
+    'Тело и жесты': 'body-gestures-kanji',
+    'Оценка и контроль': 'evaluation-control-kanji',
+    'Работа и институты': 'work-institutions-kanji',
+    'Действия и процессы': 'actions-processes-kanji',
+    'Тело и чувства': 'body-feelings-kanji',
+    'Творчество и выбор': 'creativity-choice-kanji',
+    'Общество и старшинство': 'society-seniority-kanji',
   }
   return map[text] ?? text.toLowerCase()
 }
